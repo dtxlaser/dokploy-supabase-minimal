@@ -45,24 +45,32 @@ services:
       KONG_ADMIN_LISTEN: 0.0.0.0:8001
       KONG_LOG_LEVEL: notice
 
-  studio:
-    container_name: ${CONTAINER_PREFIX}-studio
-    image: supabase/studio:2025.04.21-sha-173cc56
-    restart: unless-stopped
-    depends_on:
-      kong:
-        condition: service_started
-    environment:
-      STUDIO_PG_META_URL: http://meta:8080
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      DEFAULT_ORGANIZATION_NAME: ${STUDIO_DEFAULT_ORG}
-      DEFAULT_PROJECT_NAME: ${STUDIO_DEFAULT_PROJECT}
-      SUPABASE_URL: ${SUPABASE_PUBLIC_URL}
-      SUPABASE_PUBLIC_URL: ${SUPABASE_PUBLIC_URL}
-      SUPABASE_ANON_KEY: ${ANON_KEY}
-      SUPABASE_SERVICE_KEY: ${SERVICE_ROLE_KEY}
-      AUTH_JWT_SECRET: ${JWT_SECRET}
-      NEXT_PUBLIC_ENABLE_LOGS: false
+studio:
+  container_name: ${CONTAINER_PREFIX}-studio
+  image: supabase/studio:2025.04.21-sha-173cc56
+  restart: unless-stopped
+
+  ports:
+    - "3000:3000"
+
+  depends_on:
+    db:
+      condition: service_healthy
+
+  environment:
+    STUDIO_PG_META_URL: http://meta:8080
+    POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+    DEFAULT_ORGANIZATION_NAME: ${STUDIO_DEFAULT_ORG}
+    DEFAULT_PROJECT_NAME: ${STUDIO_DEFAULT_PROJECT}
+
+    SUPABASE_URL: ${SUPABASE_PUBLIC_URL}
+    SUPABASE_PUBLIC_URL: ${SUPABASE_PUBLIC_URL}
+    SUPABASE_ANON_KEY: ${ANON_KEY}
+    SUPABASE_SERVICE_KEY: ${SERVICE_ROLE_KEY}
+    AUTH_JWT_SECRET: ${JWT_SECRET}
+
+    NEXT_PUBLIC_ENABLE_LOGS: false
 
 volumes:
   db-config:

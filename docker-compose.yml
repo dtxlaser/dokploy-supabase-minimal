@@ -70,10 +70,6 @@ services:
       SUPABASE_SERVICE_KEY: ${SERVICE_ROLE_KEY}
       AUTH_JWT_SECRET: ${JWT_SECRET}
       NEXT_PUBLIC_ENABLE_LOGS: false
-      STUDIO_PORT: 3000
-    # Optional: only needed if you want to access Studio directly
-    ports:
-      - "${STUDIO_PORT}:3000"
 
 volumes:
   db-config:
